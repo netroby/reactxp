@@ -21,7 +21,7 @@ export class TextInput extends TextInputBase implements FocusManagerFocusableCom
         // currently define tabIndex and incorrectly defines the onFocus prop.
         const undefinedProps: any = {
             tabIndex: this.getTabIndex(),
-            onFocus: (e: React.FocusEvent<any>) => this._onFocusEx(e, props.onFocus)
+            onFocus: (e: React.FocusEvent<any>) => this._onFocusEx(e, props.onFocus as any)
         };
 
         return (
