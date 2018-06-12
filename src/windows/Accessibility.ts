@@ -9,12 +9,18 @@ import RN = require('react-native');
 import { Accessibility as NativeAccessibility, default as parentInstance } from '../native-common/Accessibility';
 
 export class Accessibility extends NativeAccessibility {
-    private _isHighContrast = RN.AccessibilityInfo.initialHighContrast || false;
+    // Work around the fact that the public react-native type definition doesn't
+    // include initialHighContrast in RN.AccessibilityInfoStatic.
+    private _isHighContrast = (RN.AccessibilityInfo as
+        RN.AccessibilityInfoStaticExtended).initialHighContrast || false;
 
     constructor() {
         super();
 
-        RN.AccessibilityInfo.addEventListener('highContrastDidChange', isEnabled => {
+        // Work around the fact that the public react-native type definition doesn't
+        // include 'highContrastDidChange' in RN.AccessibilityEventName.
+        RN.AccessibilityInfo.addEventListener('highContrastDidChange' as RN.AccessibilityEventName,
+                (isEnabled: boolean) => {
             this._updateIsHighContrast(isEnabled);
         });
     }
@@ -38,10 +44,10 @@ export class Accessibility extends NativeAccessibility {
         //
         // This dirty hack was copied from android/Accessibility.ts but it's temporary.
         // TODO: Decide on which pattern to use for "extending"/"inheriting" classes while not
-        // having problem with duplicate state like here. And then replace this dirty hack (and all the other 
+        // having problem with duplicate state like here. And then replace this dirty hack (and all the other
         // bugs in existing code - this class and others) with proper pattern.
         parentInstance.announceForAccessibility(announcement);
-    }    
+    }
 }
 
 export default new Accessibility();

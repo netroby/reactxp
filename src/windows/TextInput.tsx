@@ -17,11 +17,17 @@ import { TextInput as TextInputBase } from '../native-common/TextInput';
 export class TextInput extends TextInputBase implements FocusManagerFocusableComponent {
 
     protected _render(props: RN.TextInputProps): JSX.Element {
+        // Work around the fact that the react-native type declaration file doesn't
+        // currently define tabIndex and incorrectly defines the onFocus prop.
+        const undefinedProps: any = {
+            tabIndex: this.getTabIndex(),
+            onFocus: (e: React.FocusEvent<any>) => this._onFocusEx(e, props.onFocus)
+        };
+
         return (
             <RN.TextInput
                 { ...props }
-                tabIndex={ this.getTabIndex() }
-                onFocus={ (e: React.FocusEvent<any>) => this._onFocusEx(e, props.onFocus) }
+                { ...undefinedProps }
             />
         );
     }
